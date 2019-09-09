@@ -1,5 +1,4 @@
-#Thanks for Vettejeep's sharing(https://www.kaggle.com/vettejeep/masters-final-project-model-lb-1-392)
-#I'm a beginner in data science and I just find these parameter turning got a better cv and lb score.
+
 import os
 import time
 import warnings
