@@ -54,3 +54,52 @@ Kaggle workflow of computing the public/private MiFID is demonstrated below:
 You are going to generate 10,000 images that are in `PNG` format. Their sizes should be 64x64x3 (RGB). Then you need to zip those images and your output from your Kernel should only have ONE output file named `images.zip.`
 
 Please note that Kaggle Kernels has a number of output files capped at 500. We highly encourage you to either directly write to a `zip` file as you generate images, or create a folder at `../tmp` as your `temporary directory.`
+
+
+
+(https://www.kaggle.com/wendykan/demo-mifid-metric-for-dog-image-generation-comp/notebook) by @wendykan 
+> 
+
+# How to measure GAN performance?
+
+In GANs, the objective function for the generator and the discriminator usually measures how well they are doing relative to the opponent. For example, we measure how well the generator is fooling the discriminator. It is not a good metric in measuring the image quality or its diversity. As part of the GAN series, we look into the Inception Score and Fréchet Inception Distance on how to compare results from different GAN models.
+
+## Inception Score (IS)
+
+IS uses two criteria in measuring the performance of GAN:
+
+- The quality of the generated images, and
+- **their diversity.**
+
+Entropy can be viewed as randomness. If the value of a random variable x is highly predictable, it has low entropy. On the contrary, if it is highly unpredictable, the entropy is high. For example, in the figure below, we have two probability distributions p(x). p2 has a higher entropy than p1 because p2 has a more uniform distribution and therefore, less predictable about what x is.
+
+
+![](https://cdn-images-1.medium.com/max/1600/1*RdIYRsqXxRAKwcjtxg6_kw.jpeg)
+
+## Fréchet Inception Distance (FID)
+
+In FID, we use the Inception network to extract features from an intermediate layer. Then we model the data distribution for these features using a multivariate Gaussian distribution with mean µ and covariance Σ. The FID between the real images x and generated images g is computed as:
+
+![](https://cdn-images-1.medium.com/max/1600/1*tJmwViZesuFM89TcVN7J3A.png)
+
+where Tr sums up all the diagonal elements.
+
+&gt; Lower FID values mean better image quality and diversity.
+
+FID is sensitive to mode collapse. As shown below, the distance increases with simulated missing modes.
+
+![](https://cdn-images-1.medium.com/max/1600/1*8PzOnrzIeuM0E1unrFKLfg.png)
+
+FID is more robust to noise than IS. If the model only generates one image per class, the distance will be high. So FID is a better measurement for image diversity. FID has some rather high bias but low variance. By computing the FID between a training dataset and a testing dataset, we should expect the FID to be zero since both are real images. However, running the test with different batches of training sample shows none zero FID.
+
+![](https://cdn-images-1.medium.com/max/1600/1*D-XiZT9FdCWaA9jnyomsVw.png)
+
+Also, both FID and IS are based on the **feature extraction** (the presence or the absence of features). Will a generator have the same score if the spatial relationship is not maintained?
+
+## Precision, Recall and F1 Score
+
+If the generated images look similar to the real images on average, the precision is high. High recall implies the generator can generate any sample found in the training dataset. A F1 score is the harmonic average of precision and recall.
+
+In the Google Brain research paper “Are GANs created equal”, a toy experiment with a dataset of triangles is created to measure the precision and the recall of different GAN models.
+
+![](https://cdn-images-1.medium.com/max/1600/1*0qc9oLuZxjeAqt4JBzPw2A.png)
